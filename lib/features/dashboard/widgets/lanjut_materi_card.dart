@@ -35,7 +35,7 @@ class LanjutMateriCard extends StatelessWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    materi.selesai ? 'Selesai' : 'Belum selesai',
+                    materi.statusLabel,
                     style: const TextStyle(color: AppColors.muted),
                   ),
                 ],

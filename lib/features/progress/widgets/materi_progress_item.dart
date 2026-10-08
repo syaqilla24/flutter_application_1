@@ -32,7 +32,7 @@ class MateriProgressItem extends StatelessWidget {
             ),
           ),
           Text(
-            materi.selesai ? 'Selesai' : 'Belum Dipelajari',
+            materi.statusLabel,
             style: const TextStyle(color: AppColors.muted, fontSize: 13),
           ),
         ],
