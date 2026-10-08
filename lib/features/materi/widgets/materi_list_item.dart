@@ -14,7 +14,7 @@ class MateriListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListItemCard(
       title: materi.judul,
-      subtitle: materi.selesai ? 'Selesai' : 'Belum selesai',
+      subtitle: materi.statusLabel,
       trailing: Icon(
         materi.selesai ? Icons.check_circle : Icons.chevron_right,
         color: materi.selesai ? AppColors.success : AppColors.muted,
