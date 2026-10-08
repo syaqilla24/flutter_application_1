@@ -2,10 +2,9 @@ import '../models/brief.dart';
 import '../models/materi.dart';
 import '../models/project.dart';
 
-/// Data contoh. Nanti diganti dengan data dari Cloud Firestore.
 const daftarMateri = [
-  Materi('Pengertian & Fungsi Design Brief', selesai: true),
-  Materi('Target Audiens', selesai: true),
+  Materi('Pengertian & Fungsi Design Brief'),
+  Materi('Target Audiens'),
   Materi('Tujuan Desain & Pesan Utama'),
   Materi('Brainstorming & Keyword Desain'),
   Materi('Warna, Tipografi, Layout'),
@@ -15,7 +14,7 @@ const daftarMateri = [
 const projectBerjalan = Project('Poster Promosi Makanan', tahap: 1);
 const projectTerakhir = Project('Branding UMKM Lokal', tahap: 3, selesai: true);
 
-/// Contoh Design Brief yang bisa dipilih siswa (Subbab 4.1.5).
+/// Contoh Design Brief yang bisa dipilih siswa.
 const daftarBrief = [
   Brief('Poster Promosi Makanan', 'Poster'),
   Brief('Promosi Event Sekolah', 'Event'),
@@ -23,7 +22,7 @@ const daftarBrief = [
   Brief('Konten Media Sosial', 'Sosmed'),
 ];
 
-/// Riwayat project yang pernah dikerjakan siswa (Subbab 4.1.14).
+/// Riwayat project yang pernah dikerjakan siswa.
 const daftarRiwayat = [
   Project('Branding UMKM Lokal', tahap: 3, selesai: true),
   Project('Poster Promosi Makanan', tahap: 1),
