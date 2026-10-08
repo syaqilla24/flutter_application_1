@@ -1,15 +1,5 @@
 import '../models/brief.dart';
-import '../models/materi.dart';
 import '../models/project.dart';
-
-const daftarMateri = [
-  Materi('Pengertian & Fungsi Design Brief'),
-  Materi('Target Audiens'),
-  Materi('Tujuan Desain & Pesan Utama'),
-  Materi('Brainstorming & Keyword Desain'),
-  Materi('Warna, Tipografi, Layout'),
-  Materi('Alasan Pemilihan Elemen Visual'),
-];
 
 const projectBerjalan = Project('Poster Promosi Makanan', tahap: 1);
 const projectTerakhir = Project('Branding UMKM Lokal', tahap: 3, selesai: true);
