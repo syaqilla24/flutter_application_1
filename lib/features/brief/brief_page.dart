@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
 import '../../data/dummy_data.dart';
-import '../../shared/widgets/placeholder_page.dart';
 import '../../shared/widgets/page_title.dart';
+import 'brief_detail_page.dart';
 import 'widgets/brief_list_item.dart';
 
 /// Halaman 4.1.5 — Daftar Contoh Design Brief.
@@ -23,10 +23,7 @@ class BriefPage extends StatelessWidget {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => Scaffold(
-                    appBar: AppBar(title: Text(brief.judul)),
-                    body: PlaceholderPage(brief.judul),
-                  ),
+                  builder: (_) => BriefDetailPage(brief: brief),
                 ),
               );
             },
