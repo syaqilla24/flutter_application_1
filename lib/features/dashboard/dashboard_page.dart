@@ -14,6 +14,7 @@ import '../materi/materi_detail_page.dart';
 import '../progress/progress_page.dart';
 import '../project/analisis_page.dart';
 import '../project/concept_planner_page.dart';
+import '../project/design_reasoning_page.dart';
 import '../project/project_detail_page.dart';
 import 'widgets/lanjut_materi_card.dart';
 import 'widgets/progress_card.dart';
@@ -49,9 +50,10 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Future<void> _bukaTahap(Project project) async {
-           final Widget halaman = switch (project.tahap) {
+              final Widget halaman = switch (project.tahap) {
       0 => AnalisisPage(judulBrief: project.judul),
       1 => ConceptPlannerPage(judulBrief: project.judul),
+      2 => DesignReasoningPage(judulBrief: project.judul),
       _ => Scaffold(
           appBar: AppBar(title: Text(tahapProject[project.tahap])),
           body: PlaceholderPage(tahapProject[project.tahap]),
