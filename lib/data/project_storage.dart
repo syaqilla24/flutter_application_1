@@ -74,6 +74,27 @@ class ProjectStorage {
     ];
   }
 
+  /// Riwayat beserta isi jawabannya (untuk halaman Detail Project).
+  static Future<List<(Project, Map<String, String>)>>
+      getRiwayatLengkap() async {
+    final prefs = await SharedPreferences.getInstance();
+    final raw = prefs.getString(_keyRiwayat);
+    if (raw == null) return [];
+    final list = jsonDecode(raw) as List<dynamic>;
+    return list.map((item) {
+      final map = item as Map<String, dynamic>;
+      final data = (map['data'] as Map<String, dynamic>?) ?? {};
+      return (
+        Project(
+          map['judul'] as String,
+          tahap: map['tahap'] as int,
+          selesai: map['selesai'] as bool,
+        ),
+        data.map((k, v) => MapEntry(k, v as String)),
+      );
+    }).toList();
+  }
+
   /// Selesaikan project berjalan: pindah ke riwayat beserta datanya.
   static Future<void> selesaikan() async {
     final prefs = await SharedPreferences.getInstance();
