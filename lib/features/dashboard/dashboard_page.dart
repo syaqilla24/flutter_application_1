@@ -9,6 +9,7 @@ import '../../shared/widgets/async_body.dart';
 import '../../shared/widgets/placeholder_page.dart';
 import '../../shared/widgets/section_title.dart';
 import '../materi/materi_detail_page.dart';
+import '../progress/progress_page.dart';
 import 'widgets/lanjut_materi_card.dart';
 import 'widgets/progress_card.dart';
 import 'widgets/project_berjalan_card.dart';
@@ -59,6 +60,18 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
     );
   }
+
+    void _bukaProgress() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => Scaffold(
+          appBar: AppBar(),
+          body: const ProgressPage(),
+        ),
+      ),
+    );
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -83,7 +96,10 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
             ),
             const SizedBox(height: 20),
-            ProgressCard(materi: daftarMateri),
+                        ProgressCard(
+              materi: daftarMateri,
+              onTap: _bukaProgress,
+            ),
             const SectionTitle('Project berjalan'),
             ProjectBerjalanCard(
               project: projectBerjalan,
