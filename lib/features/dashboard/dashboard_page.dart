@@ -9,6 +9,7 @@ import '../../shared/widgets/async_body.dart';
 import '../../shared/widgets/placeholder_page.dart';
 import '../../shared/widgets/section_title.dart';
 import '../materi/materi_detail_page.dart';
+import '../project/project_detail_page.dart';
 import '../progress/progress_page.dart';
 import 'widgets/lanjut_materi_card.dart';
 import 'widgets/progress_card.dart';
@@ -49,14 +50,11 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-    void _bukaProject(Project project) {
+      void _bukaProject(Project project) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => Scaffold(
-          appBar: AppBar(title: Text(project.judul)),
-          body: PlaceholderPage(project.judul),
-        ),
+        builder: (_) => ProjectDetailPage(project: project),
       ),
     );
   }
