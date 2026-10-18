@@ -96,7 +96,7 @@ class _DashboardPageState extends State<DashboardPage> {
               ),
             ),
             const SizedBox(height: 20),
-                        ProgressCard(
+            ProgressCard(
               materi: daftarMateri,
               onTap: _bukaProgress,
             ),
