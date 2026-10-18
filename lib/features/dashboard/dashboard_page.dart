@@ -49,7 +49,7 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Future<void> _bukaTahap(Project project) async {
-        final Widget halaman = switch (project.tahap) {
+           final Widget halaman = switch (project.tahap) {
       0 => AnalisisPage(judulBrief: project.judul),
       1 => ConceptPlannerPage(judulBrief: project.judul),
       _ => Scaffold(
@@ -57,7 +57,6 @@ class _DashboardPageState extends State<DashboardPage> {
           body: PlaceholderPage(tahapProject[project.tahap]),
         ),
     };
-
     await Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => halaman),
