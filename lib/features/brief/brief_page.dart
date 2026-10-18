@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../../data/dummy_data.dart';
+import '../../shared/widgets/placeholder_page.dart';
 import '../../shared/widgets/page_title.dart';
 import 'widgets/brief_list_item.dart';
 
@@ -19,7 +20,15 @@ class BriefPage extends StatelessWidget {
           BriefListItem(
             brief: brief,
             onTap: () {
-              // TODO: buka halaman detail Design Brief (4.1.6)
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => Scaffold(
+                    appBar: AppBar(title: Text(brief.judul)),
+                    body: PlaceholderPage(brief.judul),
+                  ),
+                ),
+              );
             },
           ),
           const SizedBox(height: 12),
