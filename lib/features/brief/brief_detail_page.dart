@@ -78,10 +78,24 @@ class BriefDetailPage extends StatelessWidget {
             ),
           ),
           const SizedBox(height: 20),
-          const SurfaceCard(
-            child: Text(
-              'Isi detail brief akan ditampilkan di sini.',
-              style: TextStyle(color: AppColors.muted),
+          SurfaceCard(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Text(
+                  'Deskripsi brief',
+                  style: TextStyle(
+                    fontSize: 12,
+                    fontWeight: FontWeight.w600,
+                    color: AppColors.muted,
+                  ),
+                ),
+                const SizedBox(height: 6),
+                Text(
+                  brief.deskripsi,
+                  style: const TextStyle(height: 1.5),
+                ),
+              ],
             ),
           ),
           const SizedBox(height: 24),
