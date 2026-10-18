@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../data/dummy_data.dart';
 import '../../shared/widgets/page_title.dart';
+import '../../shared/widgets/placeholder_page.dart';
 import 'widgets/riwayat_list_item.dart';
 
 /// Halaman 4.1.14 — Riwayat Project.
@@ -19,7 +20,15 @@ class RiwayatPage extends StatelessWidget {
           RiwayatListItem(
             project: project,
             onTap: () {
-              // TODO: buka halaman detail project (4.1.15)
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => Scaffold(
+                    appBar: AppBar(title: Text(project.judul)),
+                    body: PlaceholderPage(project.judul),
+                  ),
+                ),
+              );
             },
           ),
           const SizedBox(height: 12),
