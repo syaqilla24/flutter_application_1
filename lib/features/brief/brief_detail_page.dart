@@ -1,14 +1,55 @@
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../data/project_storage.dart';
 import '../../models/brief.dart';
 import '../../shared/widgets/surface_card.dart';
+import '../project/analisis_page.dart';
 
 /// Halaman 4.1.6 — Detail Design Brief.
 class BriefDetailPage extends StatelessWidget {
   final Brief brief;
 
   const BriefDetailPage({super.key, required this.brief});
+
+  Future<void> _mulai(BuildContext context) async {
+    final berjalan = await ProjectStorage.getBerjalan();
+    if (!context.mounted) return;
+
+    if (berjalan != null) {
+      final ganti = await showDialog<bool>(
+        context: context,
+        builder: (ctx) => AlertDialog(
+          title: const Text('Ganti project berjalan?'),
+          content: Text(
+            'Kamu masih mengerjakan "${berjalan.judul}". '
+            'Memulai project baru akan menghapus pengerjaan tersebut.',
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(ctx, false),
+              child: const Text('Batal'),
+            ),
+            FilledButton(
+              onPressed: () => Navigator.pop(ctx, true),
+              child: const Text('Ganti'),
+            ),
+          ],
+        ),
+      );
+      if (ganti != true || !context.mounted) return;
+    }
+
+    await ProjectStorage.mulaiProject(brief.judul);
+    if (!context.mounted) return;
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => AnalisisPage(judulBrief: brief.judul),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,12 +87,8 @@ class BriefDetailPage extends StatelessWidget {
           const SizedBox(height: 24),
           FilledButton(
             style: FilledButton.styleFrom(backgroundColor: AppColors.ink),
-            onPressed: () {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Fitur ini belum tersedia')),
-              );
-            },
-            child: const Text('Gunakan Brief Ini'),
+            onPressed: () => _mulai(context),
+            child: const Text('Mulai Analisis Brief'),
           ),
         ],
       ),
