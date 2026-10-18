@@ -3,20 +3,23 @@ import 'package:flutter/material.dart';
 import '../../core/constants/app_colors.dart';
 import '../../data/dummy_data.dart';
 import '../../data/materi_storage.dart';
+import '../../data/project_storage.dart';
 import '../../models/materi.dart';
 import '../../models/project.dart';
 import '../../shared/widgets/async_body.dart';
 import '../../shared/widgets/placeholder_page.dart';
 import '../../shared/widgets/section_title.dart';
+import '../../shared/widgets/surface_card.dart';
 import '../materi/materi_detail_page.dart';
-import '../project/project_detail_page.dart';
 import '../progress/progress_page.dart';
+import '../project/analisis_page.dart';
+import '../project/project_detail_page.dart';
 import 'widgets/lanjut_materi_card.dart';
 import 'widgets/progress_card.dart';
 import 'widgets/project_berjalan_card.dart';
 import 'widgets/project_terakhir_card.dart';
 
-/// Halaman 4.1.1: Dashboard Siswa.
+/// Halaman 4.1.2: Dashboard Siswa.
 class DashboardPage extends StatefulWidget {
   const DashboardPage({super.key});
 
@@ -26,6 +29,14 @@ class DashboardPage extends StatefulWidget {
 
 class _DashboardPageState extends State<DashboardPage> {
   late Future<List<Materi>> _future = MateriStorage.getMateri();
+  late Future<Project?> _futureProject = ProjectStorage.getBerjalan();
+
+  void _muatUlang() {
+    setState(() {
+      _future = MateriStorage.getMateri();
+      _futureProject = ProjectStorage.getBerjalan();
+    });
+  }
 
   Future<void> _bukaMateri(Materi materi) async {
     await Navigator.push(
@@ -33,24 +44,26 @@ class _DashboardPageState extends State<DashboardPage> {
       MaterialPageRoute(builder: (_) => MateriDetailPage(materi: materi)),
     );
     if (!mounted) return;
-    setState(() {
-      _future = MateriStorage.getMateri();
-    });
+    _muatUlang();
   }
 
-  void _bukaTahap(Project project) {
-    Navigator.push(
+  Future<void> _bukaTahap(Project project) async {
+    final Widget halaman = project.tahap == 0
+        ? AnalisisPage(judulBrief: project.judul)
+        : Scaffold(
+            appBar: AppBar(title: Text(tahapProject[project.tahap])),
+            body: PlaceholderPage(tahapProject[project.tahap]),
+          );
+
+    await Navigator.push(
       context,
-      MaterialPageRoute(
-        builder: (_) => Scaffold(
-          appBar: AppBar(title: Text(tahapProject[project.tahap])),
-          body: PlaceholderPage(tahapProject[project.tahap]),
-        ),
-      ),
+      MaterialPageRoute(builder: (_) => halaman),
     );
+    if (!mounted) return;
+    _muatUlang();
   }
 
-      void _bukaProject(Project project) {
+  void _bukaProject(Project project) {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -59,7 +72,7 @@ class _DashboardPageState extends State<DashboardPage> {
     );
   }
 
-    void _bukaProgress() {
+  void _bukaProgress() {
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -70,7 +83,7 @@ class _DashboardPageState extends State<DashboardPage> {
       ),
     );
   }
-  
+
   @override
   Widget build(BuildContext context) {
     return AsyncBody<List<Materi>>(
@@ -99,9 +112,27 @@ class _DashboardPageState extends State<DashboardPage> {
               onTap: _bukaProgress,
             ),
             const SectionTitle('Project berjalan'),
-            ProjectBerjalanCard(
-              project: projectBerjalan,
-              onLanjutkan: () => _bukaTahap(projectBerjalan),
+            FutureBuilder<Project?>(
+              future: _futureProject,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState != ConnectionState.done) {
+                  return const SizedBox(height: 80);
+                }
+                final project = snapshot.data;
+                if (project == null) {
+                  return const SurfaceCard(
+                    child: Text(
+                      'Belum ada project berjalan. '
+                      'Pilih brief di tab Brief untuk memulai.',
+                      style: TextStyle(color: AppColors.muted),
+                    ),
+                  );
+                }
+                return ProjectBerjalanCard(
+                  project: project,
+                  onLanjutkan: () => _bukaTahap(project),
+                );
+              },
             ),
             const SectionTitle('Project terakhir'),
             ProjectTerakhirCard(
