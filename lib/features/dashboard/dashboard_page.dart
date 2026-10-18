@@ -4,7 +4,9 @@ import '../../core/constants/app_colors.dart';
 import '../../data/dummy_data.dart';
 import '../../data/materi_storage.dart';
 import '../../models/materi.dart';
+import '../../models/project.dart';
 import '../../shared/widgets/async_body.dart';
+import '../../shared/widgets/placeholder_page.dart';
 import '../../shared/widgets/section_title.dart';
 import '../materi/materi_detail_page.dart';
 import 'widgets/lanjut_materi_card.dart';
@@ -34,6 +36,30 @@ class _DashboardPageState extends State<DashboardPage> {
     });
   }
 
+  void _bukaTahap(Project project) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => Scaffold(
+          appBar: AppBar(title: Text(tahapProject[project.tahap])),
+          body: PlaceholderPage(tahapProject[project.tahap]),
+        ),
+      ),
+    );
+  }
+
+    void _bukaProject(Project project) {
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) => Scaffold(
+          appBar: AppBar(title: Text(project.judul)),
+          body: PlaceholderPage(project.judul),
+        ),
+      ),
+    );
+  }
+  
   @override
   Widget build(BuildContext context) {
     return AsyncBody<List<Materi>>(
@@ -61,12 +87,13 @@ class _DashboardPageState extends State<DashboardPage> {
             const SectionTitle('Project berjalan'),
             ProjectBerjalanCard(
               project: projectBerjalan,
-              onLanjutkan: () {
-                // TODO: buka halaman sesuai tahap project
-              },
+              onLanjutkan: () => _bukaTahap(projectBerjalan),
             ),
             const SectionTitle('Project terakhir'),
-            const ProjectTerakhirCard(project: projectTerakhir),
+            ProjectTerakhirCard(
+              project: projectTerakhir,
+              onTap: () => _bukaProject(projectTerakhir),
+            ),
             const SizedBox(height: 16),
             LanjutMateriCard(
               materi: materiLanjut,
