@@ -18,11 +18,12 @@ class RiwayatPage extends StatefulWidget {
 }
 
 class _RiwayatPageState extends State<RiwayatPage> {
-  late final Future<List<Project>> _future = ProjectStorage.getRiwayat();
+  late final Future<List<(Project, Map<String, String>)>> _future =
+      ProjectStorage.getRiwayatLengkap();
 
   @override
   Widget build(BuildContext context) {
-    return AsyncBody<List<Project>>(
+    return AsyncBody<List<(Project, Map<String, String>)>>(
       future: _future,
       builder: (daftarRiwayat) => ListView(
         padding: const EdgeInsets.fromLTRB(20, 24, 20, 24),
@@ -37,14 +38,17 @@ class _RiwayatPageState extends State<RiwayatPage> {
                 style: TextStyle(color: AppColors.muted),
               ),
             ),
-          for (final project in daftarRiwayat) ...[
+          for (final (project, data) in daftarRiwayat) ...[
             RiwayatListItem(
               project: project,
               onTap: () {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (_) => ProjectDetailPage(project: project),
+                    builder: (_) => ProjectDetailPage(
+                      project: project,
+                      data: data,
+                    ),
                   ),
                 );
               },
