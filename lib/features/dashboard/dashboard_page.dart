@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
-import '../../data/dummy_data.dart';
 import '../../data/materi_storage.dart';
 import '../../data/project_storage.dart';
 import '../../models/materi.dart';
@@ -13,9 +12,9 @@ import '../../shared/widgets/surface_card.dart';
 import '../materi/materi_detail_page.dart';
 import '../progress/progress_page.dart';
 import '../project/analisis_page.dart';
+import '../project/checklist_page.dart';
 import '../project/concept_planner_page.dart';
 import '../project/design_reasoning_page.dart';
-import '../project/checklist_page.dart';
 import '../project/project_detail_page.dart';
 import 'widgets/lanjut_materi_card.dart';
 import 'widgets/progress_card.dart';
@@ -33,11 +32,13 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   late Future<List<Materi>> _future = MateriStorage.getMateri();
   late Future<Project?> _futureProject = ProjectStorage.getBerjalan();
+  late Future<List<Project>> _futureRiwayat = ProjectStorage.getRiwayat();
 
   void _muatUlang() {
     setState(() {
       _future = MateriStorage.getMateri();
       _futureProject = ProjectStorage.getBerjalan();
+      _futureRiwayat = ProjectStorage.getRiwayat();
     });
   }
 
@@ -51,7 +52,7 @@ class _DashboardPageState extends State<DashboardPage> {
   }
 
   Future<void> _bukaTahap(Project project) async {
-              final Widget halaman = switch (project.tahap) {
+    final Widget halaman = switch (project.tahap) {
       0 => AnalisisPage(judulBrief: project.judul),
       1 => ConceptPlannerPage(judulBrief: project.judul),
       2 => DesignReasoningPage(judulBrief: project.judul),
@@ -61,6 +62,7 @@ class _DashboardPageState extends State<DashboardPage> {
           body: PlaceholderPage(tahapProject[project.tahap]),
         ),
     };
+
     await Navigator.push(
       context,
       MaterialPageRoute(builder: (_) => halaman),
@@ -141,9 +143,27 @@ class _DashboardPageState extends State<DashboardPage> {
               },
             ),
             const SectionTitle('Project terakhir'),
-            ProjectTerakhirCard(
-              project: projectTerakhir,
-              onTap: () => _bukaProject(projectTerakhir),
+            FutureBuilder<List<Project>>(
+              future: _futureRiwayat,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState != ConnectionState.done) {
+                  return const SizedBox(height: 80);
+                }
+                final riwayat = snapshot.data ?? [];
+                if (riwayat.isEmpty) {
+                  return const SurfaceCard(
+                    child: Text(
+                      'Belum ada project yang selesai.',
+                      style: TextStyle(color: AppColors.muted),
+                    ),
+                  );
+                }
+                final terakhir = riwayat.first;
+                return ProjectTerakhirCard(
+                  project: terakhir,
+                  onTap: () => _bukaProject(terakhir),
+                );
+              },
             ),
             const SizedBox(height: 16),
             LanjutMateriCard(
