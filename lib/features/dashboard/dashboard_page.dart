@@ -32,13 +32,14 @@ class DashboardPage extends StatefulWidget {
 class _DashboardPageState extends State<DashboardPage> {
   late Future<List<Materi>> _future = MateriStorage.getMateri();
   late Future<Project?> _futureProject = ProjectStorage.getBerjalan();
-  late Future<List<Project>> _futureRiwayat = ProjectStorage.getRiwayat();
+  late Future<List<(Project, Map<String, String>)>> _futureRiwayat =
+      ProjectStorage.getRiwayatLengkap();
 
   void _muatUlang() {
     setState(() {
       _future = MateriStorage.getMateri();
       _futureProject = ProjectStorage.getBerjalan();
-      _futureRiwayat = ProjectStorage.getRiwayat();
+      _futureRiwayat = ProjectStorage.getRiwayatLengkap();
     });
   }
 
@@ -71,15 +72,14 @@ class _DashboardPageState extends State<DashboardPage> {
     _muatUlang();
   }
 
-  void _bukaProject(Project project) {
+  void _bukaProject(Project project, Map<String, String> data) {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (_) => ProjectDetailPage(project: project),
+        builder: (_) => ProjectDetailPage(project: project, data: data),
       ),
     );
   }
-
   void _bukaProgress() {
     Navigator.push(
       context,
@@ -143,7 +143,7 @@ class _DashboardPageState extends State<DashboardPage> {
               },
             ),
             const SectionTitle('Project terakhir'),
-            FutureBuilder<List<Project>>(
+            FutureBuilder<List<(Project, Map<String, String>)>>(
               future: _futureRiwayat,
               builder: (context, snapshot) {
                 if (snapshot.connectionState != ConnectionState.done) {
@@ -158,10 +158,10 @@ class _DashboardPageState extends State<DashboardPage> {
                     ),
                   );
                 }
-                final terakhir = riwayat.first;
+                final (terakhir, dataTerakhir) = riwayat.first;
                 return ProjectTerakhirCard(
                   project: terakhir,
-                  onTap: () => _bukaProject(terakhir),
+                  onTap: () => _bukaProject(terakhir, dataTerakhir),
                 );
               },
             ),
