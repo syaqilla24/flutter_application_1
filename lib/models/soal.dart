@@ -6,5 +6,13 @@ class Soal {
   /// Indeks pilihan yang benar (mulai dari 0).
   final int jawaban;
 
-  const Soal(this.pertanyaan, this.pilihan, this.jawaban);
+  /// Penjelasan kenapa jawaban itu benar (ditampilkan di Hasil Quiz).
+  final String pembahasan;
+
+  const Soal(
+    this.pertanyaan,
+    this.pilihan,
+    this.jawaban, {
+    this.pembahasan = '',
+  });
 }
