@@ -9,12 +9,20 @@ import '../../shared/widgets/surface_card.dart';
 ///
 /// Menutup halaman dengan nilai `true` kalau siswa memilih Ulangi Quiz.
 class HasilQuizPage extends StatelessWidget {
+  final String judul;
   final List<Soal> soal;
 
   /// Indeks pilihan yang dijawab siswa untuk tiap soal.
   final List<int> jawaban;
+  final int nilaiLulus;
 
-  const HasilQuizPage({super.key, required this.soal, required this.jawaban});
+  const HasilQuizPage({
+    super.key,
+    required this.judul,
+    required this.soal,
+    required this.jawaban,
+    required this.nilaiLulus,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -23,6 +31,7 @@ class HasilQuizPage extends StatelessWidget {
         if (jawaban[i] == soal[i].jawaban) i,
     ].length;
     final skor = (benar / soal.length * 100).round();
+    final lulus = skor >= nilaiLulus;
 
     return Scaffold(
       appBar: AppBar(
@@ -32,6 +41,15 @@ class HasilQuizPage extends StatelessWidget {
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
         children: [
+          Text(
+            judul,
+            style: const TextStyle(
+              fontSize: 18,
+              fontWeight: FontWeight.w700,
+              color: AppColors.ink,
+            ),
+          ),
+          const SizedBox(height: 12),
           SurfaceCard(
             child: Column(
               children: [
@@ -55,6 +73,24 @@ class HasilQuizPage extends StatelessWidget {
                     fontWeight: FontWeight.w600,
                     color: AppColors.muted,
                   ),
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  lulus ? 'Lulus' : 'Belum lulus',
+                  style: TextStyle(
+                    fontSize: 18,
+                    fontWeight: FontWeight.w700,
+                    color: lulus ? AppColors.success : Colors.redAccent,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                Text(
+                  lulus
+                      ? 'Nilai minimal $nilaiLulus tercapai.'
+                      : 'Nilai minimal $nilaiLulus. Pelajari lagi materinya, '
+                          'lalu coba kembali.',
+                  textAlign: TextAlign.center,
+                  style: const TextStyle(color: AppColors.muted),
                 ),
               ],
             ),
@@ -118,6 +154,7 @@ class _RingkasanSoal extends StatelessWidget {
                   style: const TextStyle(
                     fontWeight: FontWeight.w700,
                     color: AppColors.ink,
+                    height: 1.4,
                   ),
                 ),
                 const SizedBox(height: 6),
@@ -133,6 +170,13 @@ class _RingkasanSoal extends StatelessWidget {
                       color: AppColors.success,
                       fontWeight: FontWeight.w600,
                     ),
+                  ),
+                ],
+                if (soal.pembahasan.isNotEmpty) ...[
+                  const SizedBox(height: 8),
+                  Text(
+                    'Pembahasan: ${soal.pembahasan}',
+                    style: const TextStyle(height: 1.4),
                   ),
                 ],
               ],

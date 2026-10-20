@@ -1,24 +1,60 @@
+import 'dart:math';
+
 import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
-import '../../data/quiz_data.dart';
+import '../../models/soal.dart';
 import '../../shared/widgets/surface_card.dart';
 import 'hasil_quiz_page.dart';
 
 /// Halaman 4.1.11 — Quiz pilihan ganda.
+///
+/// Dipakai untuk quiz tiap materi maupun Quiz Final. Urutan soal dan urutan
+/// pilihan diacak setiap kali quiz dimulai.
 class QuizPage extends StatefulWidget {
-  const QuizPage({super.key});
+  final String judul;
+  final List<Soal> soal;
+  final int nilaiLulus;
+
+  /// Dipanggil sekali setiap quiz selesai dikerjakan, dengan skor 0 sampai 100.
+  final Future<void> Function(int skor)? onSelesai;
+
+  const QuizPage({
+    super.key,
+    required this.judul,
+    required this.soal,
+    required this.nilaiLulus,
+    this.onSelesai,
+  });
 
   @override
   State<QuizPage> createState() => _QuizPageState();
 }
 
 class _QuizPageState extends State<QuizPage> {
+  final _acak = Random();
+  late List<Soal> _soal = _siapkan();
   int _nomor = 0;
   int? _pilihan;
   final List<int> _jawaban = [];
 
-  bool get _soalTerakhir => _nomor == bankSoal.length - 1;
+  /// Acak urutan soal, lalu acak urutan pilihan di tiap soal.
+  List<Soal> _siapkan() {
+    final daftar = List.of(widget.soal)..shuffle(_acak);
+    return [for (final s in daftar) _acakPilihan(s)];
+  }
+
+  Soal _acakPilihan(Soal s) {
+    final urutan = List.generate(s.pilihan.length, (i) => i)..shuffle(_acak);
+    return Soal(
+      s.pertanyaan,
+      [for (final i in urutan) s.pilihan[i]],
+      urutan.indexOf(s.jawaban),
+      pembahasan: s.pembahasan,
+    );
+  }
+
+  bool get _soalTerakhir => _nomor == _soal.length - 1;
 
   Future<void> _lanjut() async {
     _jawaban.add(_pilihan!);
@@ -31,12 +67,23 @@ class _QuizPageState extends State<QuizPage> {
       return;
     }
 
+    final benar = [
+      for (var i = 0; i < _soal.length; i++)
+        if (_jawaban[i] == _soal[i].jawaban) i,
+    ].length;
+    final skor = (benar / _soal.length * 100).round();
+
+    await widget.onSelesai?.call(skor);
+    if (!mounted) return;
+
     final ulangi = await Navigator.push<bool>(
       context,
       MaterialPageRoute(
         builder: (_) => HasilQuizPage(
-          soal: bankSoal,
+          judul: widget.judul,
+          soal: _soal,
           jawaban: List.of(_jawaban),
+          nilaiLulus: widget.nilaiLulus,
         ),
       ),
     );
@@ -44,29 +91,30 @@ class _QuizPageState extends State<QuizPage> {
 
     if (ulangi == true) {
       setState(() {
+        _soal = _siapkan();
         _nomor = 0;
         _pilihan = null;
         _jawaban.clear();
       });
     } else {
-      Navigator.pop(context);
+      Navigator.pop(context, skor);
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final soal = bankSoal[_nomor];
+    final soal = _soal[_nomor];
 
     return Scaffold(
       appBar: AppBar(
         backgroundColor: AppColors.paper,
-        title: const Text('Quiz'),
+        title: Text(widget.judul),
       ),
       body: ListView(
         padding: const EdgeInsets.fromLTRB(20, 8, 20, 24),
         children: [
           Text(
-            'Soal ${_nomor + 1} dari ${bankSoal.length}',
+            'Soal ${_nomor + 1} dari ${_soal.length}',
             style: const TextStyle(
               fontWeight: FontWeight.w600,
               color: AppColors.muted,
@@ -76,7 +124,7 @@ class _QuizPageState extends State<QuizPage> {
           ClipRRect(
             borderRadius: BorderRadius.circular(4),
             child: LinearProgressIndicator(
-              value: (_nomor + 1) / bankSoal.length,
+              value: (_nomor + 1) / _soal.length,
               minHeight: 8,
               backgroundColor: AppColors.line,
               color: AppColors.ink,
@@ -86,10 +134,10 @@ class _QuizPageState extends State<QuizPage> {
           Text(
             soal.pertanyaan,
             style: const TextStyle(
-              fontSize: 20,
+              fontSize: 18,
               fontWeight: FontWeight.w700,
               color: AppColors.ink,
-              height: 1.4,
+              height: 1.45,
             ),
           ),
           const SizedBox(height: 20),
