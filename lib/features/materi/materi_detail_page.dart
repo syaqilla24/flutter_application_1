@@ -39,6 +39,43 @@ class _MateriDetailPageState extends State<MateriDetailPage> {
     );
   }
 
+  String _poin(List<String> daftar) => daftar.map((t) => '• $t').join('\n');
+
+  List<Widget> _isiMateri(Materi materi) {
+    // Materi yang belum diisi ulang: tampilan lama
+    if (materi.bagian.isEmpty) {
+      return [
+        _Bagian(judul: 'Penjelasan', isi: materi.penjelasan),
+        const SizedBox(height: 16),
+        _Bagian(judul: 'Contoh Kasus', isi: materi.contoh, sorot: true),
+        const SizedBox(height: 16),
+        _Bagian(judul: 'Latihan Singkat', isi: materi.latihan),
+      ];
+    }
+
+    return [
+      if (materi.tujuan.isNotEmpty) ...[
+        _Bagian(
+          judul: 'Tujuan pembelajaran',
+          isi: 'Setelah mempelajari materi ini, kamu mampu:\n'
+              '${_poin(materi.tujuan)}',
+          sorot: true,
+        ),
+        const SizedBox(height: 16),
+      ],
+      for (final b in materi.bagian) ...[
+        _Bagian(judul: b.judul, isi: b.isi, sorot: b.sorot),
+        const SizedBox(height: 16),
+      ],
+      if (materi.ringkasan.isNotEmpty) ...[
+        _Bagian(judul: 'Ringkasan', isi: _poin(materi.ringkasan)),
+        const SizedBox(height: 16),
+      ],
+      if (materi.latihan.isNotEmpty)
+        _Bagian(judul: 'Latihan Singkat', isi: materi.latihan),
+    ];
+  }
+
   @override
   Widget build(BuildContext context) {
     final materi = widget.materi;
@@ -69,16 +106,7 @@ class _MateriDetailPageState extends State<MateriDetailPage> {
             ),
           ),
           const SizedBox(height: 20),
-          _Bagian(judul: 'Penjelasan', isi: materi.penjelasan),
-          const SizedBox(height: 16),
-          _Bagian(
-            judul: 'Contoh Kasus',
-            isi: materi.contoh,
-            color: AppColors.tint,
-            borderColor: AppColors.tintBorder,
-          ),
-          const SizedBox(height: 16),
-          _Bagian(judul: 'Latihan Singkat', isi: materi.latihan),
+          ..._isiMateri(materi),
           const SizedBox(height: 24),
           FilledButton(
             style: FilledButton.styleFrom(
@@ -94,25 +122,19 @@ class _MateriDetailPageState extends State<MateriDetailPage> {
   }
 }
 
-// Satu kotak berjudul. Dipakai tiga kali di halaman ini.
+// Satu kotak berjudul. [sorot] memberi warna latar khusus.
 class _Bagian extends StatelessWidget {
   final String judul;
   final String isi;
-  final Color color;
-  final Color borderColor;
+  final bool sorot;
 
-  const _Bagian({
-    required this.judul,
-    required this.isi,
-    this.color = Colors.white,
-    this.borderColor = AppColors.line,
-  });
+  const _Bagian({required this.judul, required this.isi, this.sorot = false});
 
   @override
   Widget build(BuildContext context) {
     return SurfaceCard(
-      color: color,
-      borderColor: borderColor,
+      color: sorot ? AppColors.tint : Colors.white,
+      borderColor: sorot ? AppColors.tintBorder : AppColors.line,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
