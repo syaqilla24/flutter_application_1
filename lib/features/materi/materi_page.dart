@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 
+import '../../core/constants/app_colors.dart';
 import '../../data/materi_storage.dart';
 import '../../models/materi.dart';
 import '../../shared/widgets/async_body.dart';
 import '../../shared/widgets/page_title.dart';
+import '../../shared/widgets/section_title.dart';
+import '../quiz/quiz_page.dart';
 import 'materi_detail_page.dart';
 import 'widgets/materi_list_item.dart';
 
@@ -29,6 +32,12 @@ class _MateriPageState extends State<MateriPage> {
       _future = MateriStorage.getMateri();
     });
   }
+    void _bukaQuiz() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const QuizPage()),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -43,6 +52,20 @@ class _MateriPageState extends State<MateriPage> {
             MateriListItem(materi: materi, onTap: () => _buka(materi)),
             const SizedBox(height: 12),
           ],
+                    for (final materi in daftarMateri) ...[
+            MateriListItem(materi: materi, onTap: () => _buka(materi)),
+            const SizedBox(height: 12),
+          ],
+          const SectionTitle('Uji pemahaman'),
+          FilledButton.icon(
+            style: FilledButton.styleFrom(
+              backgroundColor: AppColors.ink,
+              minimumSize: const Size.fromHeight(48),
+            ),
+            onPressed: _bukaQuiz,
+            icon: const Icon(Icons.quiz_outlined),
+            label: const Text('Kerjakan Quiz'),
+          ),
         ],
       ),
     );
