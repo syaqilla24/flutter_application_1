@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 
 import '../../core/constants/app_colors.dart';
 import '../../data/materi_storage.dart';
+import '../../data/quiz_data.dart';
 import '../../models/materi.dart';
 import '../../shared/widgets/async_body.dart';
 import '../../shared/widgets/page_title.dart';
@@ -32,10 +33,18 @@ class _MateriPageState extends State<MateriPage> {
       _future = MateriStorage.getMateri();
     });
   }
-    void _bukaQuiz() {
+
+  // Sementara: quiz latihan umum. Nanti diganti Quiz Final.
+  void _bukaQuiz() {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => const QuizPage()),
+      MaterialPageRoute(
+        builder: (_) => QuizPage(
+          judul: 'Quiz Latihan',
+          soal: bankSoal,
+          nilaiLulus: 70,
+        ),
+      ),
     );
   }
 
@@ -49,10 +58,6 @@ class _MateriPageState extends State<MateriPage> {
           const PageTitle('Materi Pembelajaran'),
           const SizedBox(height: 20),
           for (final materi in daftarMateri) ...[
-            MateriListItem(materi: materi, onTap: () => _buka(materi)),
-            const SizedBox(height: 12),
-          ],
-                    for (final materi in daftarMateri) ...[
             MateriListItem(materi: materi, onTap: () => _buka(materi)),
             const SizedBox(height: 12),
           ],
